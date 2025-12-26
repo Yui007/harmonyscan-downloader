@@ -17,11 +17,12 @@ Rectangle {
         anchors.margins: Theme.spacingMd
         spacing: Theme.spacingMd
         
-        // Cover image
+        // Cover image - fixed square aspect ratio
         Rectangle {
             id: coverContainer
             Layout.preferredWidth: 160
-            Layout.fillHeight: true
+            Layout.preferredHeight: 160  // Square aspect ratio
+            Layout.alignment: Qt.AlignTop
             radius: Theme.radiusMd
             color: Theme.secondaryBg
             clip: true
@@ -30,7 +31,7 @@ Rectangle {
                 id: coverImage
                 anchors.fill: parent
                 source: backend.mangaCoverUrl
-                fillMode: Image.PreserveAspectCrop
+                fillMode: Image.PreserveAspectCrop  // Crop to fit square
                 asynchronous: true
                 
                 opacity: status === Image.Ready ? 1 : 0
@@ -81,7 +82,7 @@ Rectangle {
                 }
             }
             
-            // Shadow overlay at bottom
+            // Gradient overlay at bottom
             Rectangle {
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -90,7 +91,7 @@ Rectangle {
                 
                 gradient: Gradient {
                     GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 1.0; color: Qt.rgba(0, 0, 0, 0.7) }
+                    GradientStop { position: 1.0; color: Qt.rgba(0, 0, 0, 0.5) }
                 }
             }
         }

@@ -432,7 +432,6 @@ class MangaBridge(QObject):
     # Internal handlers
     def _on_manga_loaded(self, manga_dict):
         """Handle manga loaded from worker."""
-        print(f"Bridge: manga loaded: {manga_dict}")  # Debug
         self._manga_dict = manga_dict if isinstance(manga_dict, dict) else {}
         self._manga_info = manga_dict  # Store for worker
         self.mangaInfoChanged.emit()

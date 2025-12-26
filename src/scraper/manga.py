@@ -84,7 +84,7 @@ class MangaScraper:
         self._playwright = await async_playwright().start()
         
         logger.info("Launching browser...")
-        self._browser = await self._playwright.chromium.launch(headless=False)
+        self._browser = await self._playwright.chromium.launch(headless=True)
         
         # Semaphore to limit concurrent operations
         self._semaphore = asyncio.Semaphore(self._max_concurrent)
