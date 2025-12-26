@@ -1,8 +1,8 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python Version">
   <img src="https://img.shields.io/badge/Playwright-Async-green.svg" alt="Playwright">
+  <img src="https://img.shields.io/badge/PyQt6-QML-purple.svg" alt="PyQt6">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
-  <img src="https://img.shields.io/github/stars/Yui007/harmonyscan-downloader?style=social" alt="Stars">
 </p>
 
 <h1 align="center">
@@ -11,21 +11,35 @@
   <br>
 </h1>
 
-<h4 align="center">A beautiful, modern CLI manga downloader for <a href="https://harmony-scan.fr" target="_blank">harmony-scan.fr</a></h4>
+<h4 align="center">A beautiful, modern manga downloader for <a href="https://harmony-scan.fr" target="_blank">harmony-scan.fr</a> with both GUI and CLI interfaces</h4>
 
 <p align="center">
   <a href="#-features">Features</a> •
+  <a href="#-gui-interface">GUI</a> •
   <a href="#-installation">Installation</a> •
   <a href="#-usage">Usage</a> •
   <a href="#-configuration">Configuration</a> •
-  <a href="#-architecture">Architecture</a> •
-  <a href="#-contributing">Contributing</a>
+  <a href="#-architecture">Architecture</a>
+</p>
+
+---
+
+<p align="center">
+  <img src="gui/GUI.PNG" alt="HarmonyScan Downloader GUI" width="800">
 </p>
 
 ---
 
 ## ✨ Features
 
+### 🖥️ GUI Interface (New!)
+- **Modern Dark Theme** - Beautiful glassmorphism design with gradient accents
+- **Rich Manga Info** - Display cover, synopsis, rating, authors, genres, and more
+- **Chapter Selection** - Easy multi-select with custom styled scrollbar
+- **Real-time Progress** - Visual download progress with chapter completion status
+- **Settings Panel** - Configure all options through a sleek dialog
+
+### 💻 CLI Interface
 - 🚀 **Concurrent Downloads** - Download multiple chapters simultaneously using async Playwright
 - 🎯 **Smart Retry Logic** - Automatic retry with exponential backoff for failed downloads
 - 📦 **Multiple Output Formats** - Save as raw images, PDF, or CBZ (comic book archive)
@@ -33,20 +47,6 @@
 - ⚡ **Fast Image Downloads** - Threaded image downloads with configurable concurrency
 - 💾 **Persistent Settings** - Save your preferences in a JSON config file
 - 🔄 **Interactive & CLI Modes** - Use interactively or via command-line arguments
-
-## 📸 Preview
-
-```
-╔═══════════════════════════════════════════════════════════════════╗
-║   ██╗  ██╗ █████╗ ██████╗ ███╗   ███╗ ██████╗ ███╗   ██╗██╗   ██╗ ║
-║   ██║  ██║██╔══██╗██╔══██╗████╗ ████║██╔═══██╗████╗  ██║╚██╗ ██╔╝ ║
-║   ███████║███████║██████╔╝██╔████╔██║██║   ██║██╔██╗ ██║ ╚████╔╝  ║
-║   ██╔══██║██╔══██║██╔══██╗██║╚██╔╝██║██║   ██║██║╚██╗██║  ╚██╔╝   ║
-║   ██║  ██║██║  ██║██║  ██║██║ ╚═╝ ██║╚██████╔╝██║ ╚████║   ██║    ║
-║   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝    ║
-║                      SCAN DOWNLOADER                              ║
-╚═══════════════════════════════════════════════════════════════════╝
-```
 
 ## 🔧 Installation
 
@@ -87,10 +87,45 @@
 
 5. **Run the application**
    ```bash
+   # Launch GUI
+   python gui_main.py
+
+   # Launch CLI
    python main.py
    ```
 
-## 🚀 Usage
+## 🖥️ GUI Interface
+
+The GUI provides a modern, user-friendly interface for downloading manga:
+
+### Running the GUI
+```bash
+python gui_main.py
+```
+
+### GUI Features
+
+| Feature | Description |
+|---------|-------------|
+| **URL Input** | Paste any harmony-scan.fr manga URL |
+| **Manga Info Panel** | View cover, title, rating, authors, artists, genres, synopsis |
+| **Chapter List** | Browse and select chapters with custom scrollbar |
+| **Download Options** | Choose format (Images, PDF, CBZ) and settings |
+| **Progress Tracking** | Real-time download progress with chapter status |
+| **Settings** | Configure download directory, concurrency, and more |
+
+### GUI Screenshots
+
+The GUI displays comprehensive manga information including:
+- 📖 Cover image (200x280)
+- ⭐ Rating with vote count
+- ✍️ Author and Artist info
+- 📅 Release year and status
+- 🏷️ Genre tags
+- 📝 Full synopsis
+- 👁️ View count
+
+## 💻 CLI Usage
 
 ### Interactive Mode
 
@@ -146,7 +181,7 @@ python main.py config --reset
 
 ## ⚙️ Configuration
 
-Settings are stored in `config.json` and can be modified via the interactive menu or directly:
+Settings are stored in `config.json` and can be modified via the GUI settings or CLI:
 
 | Setting | Default | Description |
 |---------|---------|-------------|
@@ -162,9 +197,20 @@ Settings are stored in `config.json` and can be modified via the interactive men
 ```
 harmonyscan-downloader/
 ├── main.py                      # Typer CLI entry point
+├── gui_main.py                  # PyQt6 GUI entry point
 ├── config.py                    # Configuration management
 ├── requirements.txt             # Dependencies
 ├── downloads/                   # Default download directory
+├── gui/                         # GUI Module
+│   ├── main.py                  # GUI initialization
+│   ├── backend/
+│   │   ├── bridge.py            # QML-Python bridge
+│   │   └── models.py            # Chapter list model
+│   └── qml/
+│       ├── main.qml             # Root QML window
+│       ├── Theme.qml            # Design system
+│       ├── components/          # Reusable UI components
+│       └── screens/             # App screens
 └── src/
     ├── cli/
     │   ├── app.py               # Main application logic
@@ -183,6 +229,8 @@ harmonyscan-downloader/
 
 ### Key Technologies
 
+- **[PyQt6](https://pypi.org/project/PyQt6/)** - Modern Qt6 bindings for GUI
+- **[QML](https://doc.qt.io/qt-6/qmlapplications.html)** - Declarative UI language
 - **[Playwright](https://playwright.dev/python/)** - Async browser automation for scraping
 - **[Rich](https://rich.readthedocs.io/)** - Beautiful terminal UI
 - **[Typer](https://typer.tiangolo.com/)** - Modern CLI framework
@@ -193,7 +241,7 @@ harmonyscan-downloader/
 
 ## 🔄 How It Works
 
-1. **Manga Info Fetching** - Playwright navigates to the manga page and extracts metadata (title, authors, genres, chapters)
+1. **Manga Info Fetching** - Playwright navigates to the manga page and extracts metadata (title, authors, genres, chapters, synopsis, etc.)
 
 2. **Concurrent Chapter Scraping** - Using `asyncio.gather()`, multiple chapter pages are scraped simultaneously to get image URLs
 
@@ -218,12 +266,16 @@ source venv/bin/activate  # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
 playwright install chromium
 
-# Run in development
+# Run GUI in development
+python gui_main.py
+
+# Run CLI in development
 python main.py
 ```
 
 ### Project Dependencies
 
+- `PyQt6` - Qt6 GUI framework
 - `playwright` - Browser automation
 - `rich` - Terminal formatting
 - `typer` - CLI framework

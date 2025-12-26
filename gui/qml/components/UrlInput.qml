@@ -62,6 +62,7 @@ Rectangle {
             color: Theme.textPrimary
             font.pixelSize: Theme.fontSizeMd
             font.family: Theme.fontFamily
+            verticalAlignment: TextInput.AlignVCenter
             
             background: Item {}
             
