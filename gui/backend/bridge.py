@@ -101,6 +101,10 @@ class DownloadWorker(QThread):
                 "status": manga.status or "",
                 "manga_type": manga.manga_type or "",
                 "release_year": manga.release_year or "",
+                "synopsis": manga.synopsis or "",
+                "total_views": manga.total_views or "",
+                "favorites_count": int(manga.favorites_count) if manga.favorites_count else 0,
+                "team": manga.team or "",
             }
             
             # Convert chapters to list of dicts
@@ -282,6 +286,30 @@ class MangaBridge(QObject):
     @pyqtProperty(str, notify=mangaInfoChanged)
     def mangaStatus(self):
         return self._manga_dict.get("status", "")
+    
+    @pyqtProperty(str, notify=mangaInfoChanged)
+    def mangaSynopsis(self):
+        return self._manga_dict.get("synopsis", "")
+    
+    @pyqtProperty(str, notify=mangaInfoChanged)
+    def mangaTotalViews(self):
+        return self._manga_dict.get("total_views", "")
+    
+    @pyqtProperty(int, notify=mangaInfoChanged)
+    def mangaFavoritesCount(self):
+        return self._manga_dict.get("favorites_count", 0)
+    
+    @pyqtProperty(str, notify=mangaInfoChanged)
+    def mangaTeam(self):
+        return self._manga_dict.get("team", "")
+    
+    @pyqtProperty(str, notify=mangaInfoChanged)
+    def mangaType(self):
+        return self._manga_dict.get("manga_type", "")
+    
+    @pyqtProperty(str, notify=mangaInfoChanged)
+    def mangaReleaseYear(self):
+        return self._manga_dict.get("release_year", "")
     
     @pyqtProperty(bool, notify=mangaInfoChanged)
     def hasMangaInfo(self):

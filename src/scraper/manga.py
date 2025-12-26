@@ -52,6 +52,10 @@ class MangaInfo:
     status: Optional[str] = None
     manga_type: Optional[str] = None
     release_year: Optional[str] = None
+    synopsis: Optional[str] = None
+    total_views: Optional[str] = None
+    favorites_count: Optional[int] = None
+    team: Optional[str] = None
     chapters: List[Chapter] = None
     
     def __post_init__(self):
@@ -63,6 +67,7 @@ class MangaInfo:
             self.genres = []
         if self.chapters is None:
             self.chapters = []
+
 
 
 class MangaScraper:
@@ -194,38 +199,59 @@ class MangaScraper:
                 text = await genre_elems.nth(i).inner_text()
                 genres.append(text.strip())
             
-            # Status
-            status = None
-            status_items = page.locator(".post-content_item")
-            count = await status_items.count()
-            for i in range(count):
-                item = status_items.nth(i)
-                heading = item.locator(".summary-heading h5")
-                if await heading.count() > 0:
-                    heading_text = await heading.inner_text()
-                    if "Statut" in heading_text:
-                        status = await item.locator(".summary-content").inner_text()
-                        status = status.strip()
-                        break
+            # Helper function to extract content by heading keywords
+            async def get_content_by_heading(keywords):
+                items = page.locator(".post-content_item")
+                items_count = await items.count()
+                for i in range(items_count):
+                    item = items.nth(i)
+                    heading = item.locator(".summary-heading h5")
+                    if await heading.count() > 0:
+                        heading_text = (await heading.inner_text()).strip().lower()
+                        for keyword in keywords:
+                            if keyword.lower() in heading_text:
+                                content_elem = item.locator(".summary-content")
+                                if await content_elem.count() > 0:
+                                    return (await content_elem.inner_text()).strip()
+                return None
+            
+            # Status (English: Status, French: Statut)
+            status = await get_content_by_heading(["status", "statut"])
             
             # Type
-            manga_type = None
-            for i in range(count):
-                item = status_items.nth(i)
-                heading = item.locator(".summary-heading h5")
-                if await heading.count() > 0:
-                    heading_text = await heading.inner_text()
-                    if "Type" in heading_text:
-                        manga_type = await item.locator(".summary-content").inner_text()
-                        manga_type = manga_type.strip()
-                        break
+            manga_type = await get_content_by_heading(["type"])
             
-            # Release year
-            release_year = None
-            release_elem = page.locator(selectors.MANGA_RELEASE_YEAR)
-            if await release_elem.count() > 0:
-                release_year = await release_elem.first.inner_text()
-                release_year = release_year.strip()
+            # Release year (English: Output/Release, French: Sortie)
+            release_year = await get_content_by_heading(["output", "sortie", "release"])
+            
+            # Alternative names (English: Other Name(s), French: Autre(s) nom(s))
+            alternative_names = await get_content_by_heading(["other name", "autre", "alternative"])
+            
+            # Ranking/Views
+            total_views = await get_content_by_heading(["ranking", "classement"])
+            
+            # Team
+            team = await get_content_by_heading(["team", "équipe"])
+            
+            # Synopsis
+            synopsis = None
+            synopsis_elem = page.locator(selectors.MANGA_SYNOPSIS)
+            if await synopsis_elem.count() > 0:
+                synopsis = await synopsis_elem.first.inner_text()
+                synopsis = synopsis.strip()
+            
+            # Favorites count
+            favorites_count = None
+            favorites_elem = page.locator(selectors.MANGA_FAVORITES)
+            if await favorites_elem.count() > 0:
+                try:
+                    fav_text = await favorites_elem.first.inner_text()
+                    # Extract number from text like "35 users have added..."
+                    match = re.search(r'(\d+)', fav_text)
+                    if match:
+                        favorites_count = int(match.group(1))
+                except:
+                    pass
             
             # Get chapters
             chapters = await self._extract_chapters(page)
@@ -243,6 +269,10 @@ class MangaScraper:
                 status=status,
                 manga_type=manga_type,
                 release_year=release_year,
+                synopsis=synopsis,
+                total_views=total_views,
+                favorites_count=favorites_count,
+                team=team,
                 chapters=chapters
             )
             

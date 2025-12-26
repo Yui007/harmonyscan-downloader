@@ -80,26 +80,20 @@ Item {
             }
         }
         
-        // Main content area
+        // Main content area - Split layout
         RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
             spacing: Theme.spacingMd
             
-            // Left column - Manga info
-            ColumnLayout {
-                Layout.preferredWidth: 280
+            // Left column - Manga info (65% width - much larger)
+            MangaCard {
+                Layout.preferredWidth: parent.width * 0.65
+                Layout.minimumWidth: 550
                 Layout.fillHeight: true
-                spacing: Theme.spacingMd
-                
-                // Manga card - reads from backend directly
-                MangaCard {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                }
             }
             
-            // Right column - Chapter list
+            // Right column - Chapter list (55% width)
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
