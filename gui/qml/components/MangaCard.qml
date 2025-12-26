@@ -7,7 +7,7 @@ Rectangle {
     id: root
     
     // Now we read directly from backend properties
-    property bool hasInfo: backend.hasMangaInfo
+    property bool hasInfo: backend ? backend.hasMangaInfo : false
     
     radius: Theme.radiusLg
     color: Theme.cardBg
@@ -27,7 +27,7 @@ Rectangle {
                 Layout.fillWidth: true
                 spacing: Theme.spacingLg
                 
-                // Cover image - Large square
+                // Cover image - Large
                 Rectangle {
                     id: coverContainer
                     Layout.preferredWidth: 200
@@ -40,7 +40,7 @@ Rectangle {
                     Image {
                         id: coverImage
                         anchors.fill: parent
-                        source: backend.mangaCoverUrl
+                        source: backend ? backend.mangaCoverUrl : ""
                         fillMode: Image.PreserveAspectCrop
                         asynchronous: true
                         
@@ -87,7 +87,7 @@ Rectangle {
                     // Title
                     Text {
                         Layout.fillWidth: true
-                        text: root.hasInfo ? backend.mangaTitle : "Loading..."
+                        text: root.hasInfo && backend ? backend.mangaTitle : "Loading..."
                         font.pixelSize: 22
                         font.bold: true
                         color: Theme.textPrimary
@@ -99,7 +99,7 @@ Rectangle {
                     // Rating row
                     Row {
                         spacing: Theme.spacingSm
-                        visible: backend.mangaRating > 0
+                        visible: backend && backend.mangaRating > 0
                         
                         Text {
                             text: "⭐"
@@ -107,14 +107,14 @@ Rectangle {
                         }
                         
                         Text {
-                            text: backend.mangaRating.toFixed(1)
+                            text: backend ? backend.mangaRating.toFixed(1) : ""
                             font.pixelSize: 16
                             font.bold: true
                             color: Theme.warning
                         }
                         
                         Text {
-                            text: "(" + backend.mangaRatingCount + " votes)"
+                            text: backend ? "(" + backend.mangaRatingCount + " votes)" : ""
                             font.pixelSize: 14
                             color: Theme.textMuted
                         }
@@ -126,12 +126,12 @@ Rectangle {
                             radius: Theme.radiusSm
                             color: Theme.accent
                             opacity: 0.2
-                            visible: backend.mangaFavoritesCount > 0
+                            visible: backend && backend.mangaFavoritesCount > 0
                             
                             Text {
                                 id: favText
                                 anchors.centerIn: parent
-                                text: "❤️ " + backend.mangaFavoritesCount
+                                text: backend ? "❤️ " + backend.mangaFavoritesCount : ""
                                 font.pixelSize: 12
                                 color: Theme.accent
                             }
@@ -150,12 +150,12 @@ Rectangle {
                             radius: Theme.radiusSm
                             color: Theme.info
                             opacity: 0.2
-                            visible: backend.mangaType.length > 0
+                            visible: backend && backend.mangaType.length > 0
                             
                             Text {
                                 id: typeText
                                 anchors.centerIn: parent
-                                text: backend.mangaType
+                                text: backend ? backend.mangaType : ""
                                 font.pixelSize: 13
                                 font.weight: Font.Medium
                                 color: Theme.info
@@ -168,12 +168,12 @@ Rectangle {
                             height: yearText.implicitHeight + 6
                             radius: Theme.radiusSm
                             color: Theme.elevated
-                            visible: backend.mangaReleaseYear.length > 0
+                            visible: backend && backend.mangaReleaseYear.length > 0
                             
                             Text {
                                 id: yearText
                                 anchors.centerIn: parent
-                                text: "📅 " + backend.mangaReleaseYear
+                                text: backend ? "📅 " + backend.mangaReleaseYear : ""
                                 font.pixelSize: 13
                                 color: Theme.textSecondary
                             }
@@ -187,14 +187,14 @@ Rectangle {
                             radius: Theme.radiusSm
                             color: statusBadge.isOngoing ? Theme.success : Theme.info
                             opacity: 0.2
-                            visible: backend.mangaStatus.length > 0
+                            visible: backend && backend.mangaStatus.length > 0
                             
-                            property bool isOngoing: backend.mangaStatus.toLowerCase().indexOf("ongoing") >= 0 || backend.mangaStatus.toLowerCase().indexOf("en cours") >= 0
+                            property bool isOngoing: backend ? (backend.mangaStatus.toLowerCase().indexOf("ongoing") >= 0 || backend.mangaStatus.toLowerCase().indexOf("en cours") >= 0) : false
                             
                             Text {
                                 id: statusText
                                 anchors.centerIn: parent
-                                text: backend.mangaStatus
+                                text: backend ? backend.mangaStatus : ""
                                 font.pixelSize: 13
                                 font.weight: Font.Medium
                                 color: statusBadge.isOngoing ? Theme.success : Theme.info
@@ -205,7 +205,7 @@ Rectangle {
                     // Author row
                     Row {
                         spacing: Theme.spacingSm
-                        visible: backend.mangaAuthors.length > 0
+                        visible: backend && backend.mangaAuthors.length > 0
                         
                         Text {
                             text: "✍️ Author:"
@@ -214,7 +214,7 @@ Rectangle {
                         }
                         
                         Text {
-                            text: backend.mangaAuthors
+                            text: backend ? backend.mangaAuthors : ""
                             font.pixelSize: 14
                             color: Theme.textPrimary
                         }
@@ -223,7 +223,7 @@ Rectangle {
                     // Artist row
                     Row {
                         spacing: Theme.spacingSm
-                        visible: backend.mangaArtists.length > 0
+                        visible: backend && backend.mangaArtists.length > 0
                         
                         Text {
                             text: "🎨 Artist:"
@@ -232,9 +232,27 @@ Rectangle {
                         }
                         
                         Text {
-                            text: backend.mangaArtists
+                            text: backend ? backend.mangaArtists : ""
                             font.pixelSize: 14
                             color: Theme.textPrimary
+                        }
+                    }
+                    
+                    // Views row - moved here under artist
+                    Row {
+                        spacing: Theme.spacingSm
+                        visible: backend && backend.mangaTotalViews.length > 0
+                        
+                        Text {
+                            text: "👁️ Views:"
+                            font.pixelSize: 14
+                            color: Theme.textMuted
+                        }
+                        
+                        Text {
+                            text: backend ? backend.mangaTotalViews : ""
+                            font.pixelSize: 14
+                            color: Theme.textSecondary
                         }
                     }
                 }
@@ -244,10 +262,10 @@ Rectangle {
             Flow {
                 Layout.fillWidth: true
                 spacing: Theme.spacingXs
-                visible: backend.mangaGenres.length > 0
+                visible: backend && backend.mangaGenres.length > 0
                 
                 Repeater {
-                    model: backend.mangaGenres.length > 0 ? backend.mangaGenres.split(", ").slice(0, 8) : []
+                    model: backend && backend.mangaGenres.length > 0 ? backend.mangaGenres.split(", ").slice(0, 8) : []
                     
                     delegate: Rectangle {
                         width: genreText.implicitWidth + Theme.spacingSm * 2
@@ -272,7 +290,7 @@ Rectangle {
                 height: synopsisCol.implicitHeight + Theme.spacingMd * 2
                 radius: Theme.radiusMd
                 color: Theme.secondaryBg
-                visible: backend.mangaSynopsis.length > 0
+                visible: backend && backend.mangaSynopsis.length > 0
                 
                 ColumnLayout {
                     id: synopsisCol
@@ -289,30 +307,12 @@ Rectangle {
                     
                     Text {
                         Layout.fillWidth: true
-                        text: backend.mangaSynopsis
+                        text: backend ? backend.mangaSynopsis : ""
                         font.pixelSize: 14
                         color: Theme.textSecondary
                         wrapMode: Text.WordWrap
                         lineHeight: 1.4
                     }
-                }
-            }
-            
-            // Total views
-            Row {
-                spacing: Theme.spacingSm
-                visible: backend.mangaTotalViews.length > 0
-                
-                Text {
-                    text: "👁️ Views:"
-                    font.pixelSize: 14
-                    color: Theme.textMuted
-                }
-                
-                Text {
-                    text: backend.mangaTotalViews
-                    font.pixelSize: 14
-                    color: Theme.textSecondary
                 }
             }
         }

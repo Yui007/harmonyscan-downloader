@@ -224,14 +224,14 @@ class MangaScraper:
             # Release year (English: Output/Release, French: Sortie)
             release_year = await get_content_by_heading(["output", "sortie", "release"])
             
-            # Alternative names (English: Other Name(s), French: Autre(s) nom(s))
-            alternative_names = await get_content_by_heading(["other name", "autre", "alternative"])
+            # Alternative names (French: "Autre(s) nom(s)")
+            alternative_names = await get_content_by_heading(["other name", "autre(s) nom", "autre nom", "alternative"])
             
             # Ranking/Views
             total_views = await get_content_by_heading(["ranking", "classement"])
             
-            # Team
-            team = await get_content_by_heading(["team", "équipe"])
+            # Team (French: "Team(s)")
+            team = await get_content_by_heading(["team(s)", "team", "équipe"])
             
             # Synopsis
             synopsis = None
